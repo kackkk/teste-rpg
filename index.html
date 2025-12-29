@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="cyber">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LEGACY V9 | Neon Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="animated-bg"></div>
+    <div class="scanlines"></div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- VIEW 1: LOCK SCREEN -->
+    <section id="view-lock" class="view-section">
+        <div class="lock-container glass-panel">
+            <i class="fa-solid fa-fingerprint lock-icon pulse-icon"></i>
+            <h2>Acesso Restrito</h2>
+            <p style="color:var(--text-muted); margin-bottom:15px;">Identifique-se, Operador.</p>
+            <input type="password" id="unlock-pass" placeholder="Senha de Acesso">
+            <button class="btn-primary full-width glow-btn" onclick="App.unlock()">Desbloquear</button>
+        </div>
+    </section>
+
+    <!-- VIEW 2: SETUP / ONBOARDING -->
+    <section id="view-setup" class="view-section">
+        <div class="setup-container glass-panel">
+            <h1 class="setup-title">Novo Operador</h1>
+            
+            <label style="text-align:left; display:block;">Codinome</label>
+            <input type="text" id="setup-name" placeholder="Como devemos te chamar?">
+            
+            <label style="text-align:left; display:block; margin-top:10px;">Credenciais de Acesso</label>
+            <input type="email" id="setup-email" placeholder="seu@email.com">
+            <input type="password" id="setup-pass" placeholder="Crie uma senha segura">
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div>
+                    <label style="text-align:left; display:block;">Idade</label>
+                    <input type="number" id="setup-age" placeholder="Anos">
+                </div>
+                <div>
+                    <label style="text-align:left; display:block;">Peso (kg)</label>
+                    <input type="number" id="setup-weight" placeholder="Kg">
+                </div>
+            </div>
+            
+            <label style="text-align:left; display:block;">Ocupação Atual</label>
+            <input type="text" id="setup-job" placeholder="Trabalho, Estudo ou Desempregado...">
+
+            <label style="text-align:left; display:block; margin-top:10px;">Tema do Sistema</label>
+            <select id="setup-theme" onchange="document.documentElement.setAttribute('data-theme', this.value)">
+                <option value="cyber">Cyberpunk (Padrão)</option>
+                <option value="dark">Dark Soul</option>
+                <option value="light">Futurism White</option>
+                <option value="matrix">Matrix Code</option>
+                <option value="sunset">Synthwave Sunset</option>
+            </select>
+
+            <label style="text-align:left; display:block; margin-top:20px;">Especialização</label>
+            <div class="class-selection">
+                <div class="class-card" onclick="StepSystem.selectClass(this, 'guerreiro')">
+                    <i class="fa-solid fa-hand-fist"></i><span>Guerreiro</span><small style="color:var(--primary)">+FORÇA</small>
+                </div>
+                <div class="class-card" onclick="StepSystem.selectClass(this, 'hacker')">
+                    <i class="fa-solid fa-laptop-code"></i><span>Hacker</span><small style="color:var(--primary)">+INTELIGÊNCIA</small>
+                </div>
+                <div class="class-card" onclick="StepSystem.selectClass(this, 'atleta')">
+                    <i class="fa-solid fa-person-running"></i><span>Atleta</span><small style="color:var(--primary)">+VIGOR</small>
+                </div>
+            </div>
+            
+            <button class="btn-primary full-width glow-btn" style="margin-top:20px" onclick="App.completeOnboarding()">INICIAR SISTEMA</button>
+        </div>
+    </section>
+
+    <!-- VIEW 3: MAIN APP -->
+    <section id="view-app" class="view-section">
+        <div class="app-layout">
+        <aside class="sidebar desktop-only glass-panel">
+            <div class="profile-summary">
+                <div class="avatar-box" onclick="UI.toggleModal('avatar-modal', true)">
+                    <img id="pc-avatar" src="" alt="Avatar">
+                    <span class="lvl-badge" id="pc-lvl">Lv.1</span>
+                </div>
+                <h3 id="pc-name">Player</h3>
+                <span class="class-tag" id="pc-class">Novato</span>
+                <div id="sidebar-stats" class="stats-summary"></div>
+                
+                <button onclick="App.cheatGold()" class="cheat-btn" title="Adicionar 1000 Gold (Teste)">
+                    <i class="fa-solid fa-bug"></i> Debug Gold
+                </button>
+                <button onclick="App.cheatXP()" class="cheat-btn" title="Adicionar XP (Teste)">
+                    <i class="fa-solid fa-flask"></i> Debug XP
+                </button>
+            </div>
+
+            <nav class="desktop-nav">
+                <button class="nav-btn active" data-tab="dashboard" onclick="UI.switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i> Painel</button>
+                <button class="nav-btn" data-tab="stats" onclick="UI.switchTab('stats')"><i class="fa-solid fa-chart-line"></i> Estatísticas</button>
+                <button class="nav-btn" data-tab="journal" onclick="UI.switchTab('journal')"><i class="fa-solid fa-book-open"></i> Diário</button>
+                <button class="nav-btn" data-tab="trophies" onclick="UI.switchTab('trophies')"><i class="fa-solid fa-trophy"></i> Conquistas</button>
+                <button class="nav-btn" data-tab="achievements" onclick="UI.switchTab('achievements')"><i class="fa-solid fa-store"></i> Loja & Skills</button>
+                <button class="nav-btn" data-tab="vision" onclick="UI.switchTab('vision')"><i class="fa-solid fa-image"></i> Visão</button>
+                <button class="nav-btn" data-tab="settings" onclick="UI.switchTab('settings')"><i class="fa-solid fa-gear"></i> Sistema</button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header glass-panel">
+                <div class="header-left">
+                    <div class="mobile-avatar mobile-only" onclick="UI.toggleModal('avatar-modal', true)">
+                        <img id="mob-avatar" src="">
+                    </div>
+                    <div class="greetings">
+                        <h1 id="greeting-text">Bem-vindo</h1>
+                        <p id="quote-text">Sincronizando...</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="resource-pill gold"><i class="fa-solid fa-coins"></i> <span id="hud-gold">0</span></div>
+                    <div class="resource-pill streak"><i class="fa-solid fa-fire"></i> <span id="hud-streak">0</span></div>
+                    <button class="btn-focus" onclick="Pomodoro.toggle()"><i class="fa-solid fa-bullseye"></i> FOCO</button>
+                </div>
+            </header>
+
+            <div id="tab-dashboard" class="tab-view active">
+                <div id="pomodoro-overlay" class="glass-panel hidden pulse-border">
+                    <span id="pomo-timer">25:00</span> <small>Foco Absoluto</small>
+                </div>
+
+                <div class="dashboard-columns">
+                    <div class="col glass-panel">
+                        <div class="section-title">
+                            <h3><i class="fa-solid fa-rotate"></i> Rotina Diária</h3>
+                            <div style="display:flex; gap:5px;">
+                                <button class="btn-mini glow-btn btn-danger-glow" onclick="UI.openDeleteTaskModal('routine')"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-mini glow-btn" onclick="UI.openAddModal('routine')">+</button>
+                            </div>
+                        </div>
+                        <div id="list-routine" class="task-container"></div>
+                    </div>
+
+                    <div class="col glass-panel">
+                        <div class="section-title">
+                            <h3><i class="fa-solid fa-flag-checkered"></i> Metas & Prazos</h3>
+                            <button class="btn-mini glow-btn" onclick="UI.openAddModal('goal')">+</button>
+                        </div>
+                        <div id="list-quest" class="task-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-stats" class="tab-view">
+                <div class="glass-panel" style="display: flex; flex-direction: column; align-items: center; padding: 30px;">
+                    <h2 style="margin-bottom: 20px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px;">Radar de Atributos</h2>
+                    <div style="width: 100%; max-width: 600px; height: 400px;">
+                        <canvas id="statsChart"></canvas>
+                    </div>
+                    <div id="stats-details" class="stats-details"></div>
+                </div>
+            </div>
+
+            <div id="tab-journal" class="tab-view">
+                <div class="input-card glass-panel">
+                    <textarea id="journal-input" placeholder="Registre o progresso de hoje..."></textarea>
+                    <div class="journal-actions">
+                        <div class="moods">
+                            <span onclick="Journal.setMood('happy')">🔥</span>
+                            <span onclick="Journal.setMood('neutral')">😐</span>
+                            <span onclick="Journal.setMood('sad')">💀</span>
+                        </div>
+                        <button class="btn-primary glow-btn" onclick="Journal.save()">Salvar</button>
+                    </div>
+                </div>
+                <div id="journal-feed" class="journal-feed"></div>
+            </div>
+
+            <div id="tab-trophies" class="tab-view">
+                <div class="glass-panel">
+                    <div id="badges-list" class="badge-grid"></div>
+                </div>
+            </div>
+
+            <div id="tab-achievements" class="tab-view">
+                <div class="store-grid">
+                    <div class="store-card glass-panel" onclick="App.buySkill('xp_boost')">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>XP Boost</span>
+                        <p class="store-desc">Aumenta o ganho de XP em 50% permanentemente.</p>
+                        <small style="color:var(--accent)">500 Gold</small>
+                    </div>
+                    <div class="store-card glass-panel" onclick="App.buySkill('gold_boost')">
+                        <i class="fa-solid fa-gem"></i>
+                        <span>Magnata</span>
+                        <p class="store-desc">Multiplica seus ganhos de Gold por 1.5x.</p>
+                        <small style="color:var(--accent)">500 Gold</small>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-vision" class="tab-view">
+                <button class="btn-primary full-width glow-btn" onclick="UI.toggleModal('vision-add-modal', true)" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-plus"></i> Adicionar Nova Imagem
+                </button>
+                <div id="vision-gallery" class="gallery-grid"></div>
+            </div>
+
+            <div id="tab-settings" class="tab-view">
+                <div class="settings-container">
+                    
+                    <!-- VISUAL -->
+                    <div class="settings-section glass-panel">
+                        <div class="settings-header"><i class="fa-solid fa-eye"></i> Visual</div>
+                        <div class="setting-row">
+                            <span>Tema da Interface</span>
+                            <select onchange="UI.setTheme(this.value)" style="width: 150px;">
+                                <option value="cyber">Cyberpunk</option>
+                                <option value="dark">Dark Soul</option>
+                                <option value="light">Futurism White</option>
+                                <option value="matrix">Matrix Code</option>
+                                <option value="sunset">Synthwave Sunset</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <span>Animações</span>
+                            <label class="switch"><input type="checkbox" id="check-anim" onchange="App.updateSetting('animations', this.checked)"><span class="slider"></span></label>
+                        </div>
+                    </div>
+
+                    <!-- SISTEMA -->
+                    <div class="settings-section glass-panel">
+                        <div class="settings-header"><i class="fa-solid fa-microchip"></i> Sistema</div>
+                        <div class="setting-row">
+                            <span>Efeitos Sonoros</span>
+                            <label class="switch"><input type="checkbox" id="check-sound" onchange="App.updateSetting('sound', this.checked)"><span class="slider"></span></label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Hardcore Mode</span>
+                            <label class="switch"><input type="checkbox" id="check-hardcore" onchange="App.updateSetting('hardcore', this.checked)"><span class="slider"></span></label>
+                        </div>
+                        <div class="setting-row">
+                            <span>Nova Senha</span>
+                            <input type="password" id="setting-new-pass" placeholder="Definir..." onchange="App.setPassword(this.value)" style="width: 120px;">
+                        </div>
+                    </div>
+
+                    <!-- DADOS -->
+                    <div class="settings-section glass-panel">
+                        <div class="settings-header"><i class="fa-solid fa-database"></i> Dados</div>
+                        <div class="data-actions">
+                            <button class="btn-secondary" onclick="App.exportSave()"><i class="fa-solid fa-download"></i> Exportar</button>
+                            <button class="btn-secondary" onclick="App.importSave()"><i class="fa-solid fa-upload"></i> Importar</button>
+                        </div>
+                        <button class="btn-danger full-width" style="margin-top:10px;" onclick="DataManager.reset()"><i class="fa-solid fa-skull"></i> RESETAR TUDO</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="spacer-bottom mobile-only"></div>
+        </main>
+
+        <nav class="bottom-nav mobile-only glass-panel">
+            <button class="b-btn active" data-tab="dashboard" onclick="UI.switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i></button>
+            <button class="b-btn" data-tab="journal" onclick="UI.switchTab('journal')"><i class="fa-solid fa-book"></i></button>
+            <button class="b-add glow-btn" onclick="UI.openAddModal('routine')"><i class="fa-solid fa-plus"></i></button>
+            <button class="b-btn" data-tab="trophies" onclick="UI.switchTab('trophies')"><i class="fa-solid fa-trophy"></i></button>
+            <button class="b-btn" data-tab="achievements" onclick="UI.switchTab('achievements')"><i class="fa-solid fa-store"></i></button>
+            <button class="b-btn" data-tab="settings" onclick="UI.switchTab('settings')"><i class="fa-solid fa-gear"></i></button>
+        </nav>
+        </div>
+    </section>
+
+    <div id="add-modal" class="overlay hidden">
+        <div class="modal-card glass-panel bounce-in">
+            <h3>Novo Objetivo</h3>
+            <input type="text" id="new-task-desc" placeholder="Ex: Ler 10 páginas">
+            
+            <label>Atributo:</label>
+            <select id="new-task-type">
+                <option value="dis">💼 Disciplina</option>
+                <option value="int">🧠 Inteligência</option>
+                <option value="str">💪 Força</option>
+                <option value="zel">🏠 Zelo</option>
+            </select>
+            
+            <div id="duration-area" class="hidden" style="margin-top:10px;">
+                <label>Duração (Dias):</label>
+                <input type="number" id="new-task-days" value="10" min="2">
+                <small style="color:var(--accent)">A tarefa só poderá ser marcada 1x por dia.</small>
+            </div>
+
+            <input type="hidden" id="task-context">
+
+            <div class="modal-actions">
+                <button class="btn-text" onclick="UI.toggleModal('add-modal', false)">Cancelar</button>
+                <button class="btn-primary glow-btn" onclick="App.handleAddTask()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="avatar-modal" class="overlay hidden">
+        <div class="modal-card glass-panel">
+            <h3>URL do Avatar</h3>
+            <input type="text" id="avatar-url-input" placeholder="Cole a URL...">
+            <div style="display:flex; gap:10px; margin: 10px 0;">
+                <label class="btn-primary full-width glow-btn btn-file">
+                    <i class="fa-solid fa-upload"></i> Galeria
+                    <input type="file" accept="image/*" onchange="App.uploadAvatar(this)">
+                </label>
+            </div>
+            <button class="btn-primary full-width glow-btn" onclick="App.updateAvatar()">Salvar URL</button>
+            <button class="btn-text full-width" onclick="UI.toggleModal('avatar-modal', false)">Fechar</button>
+        </div>
+    </div>
+
+    <div id="image-modal" class="overlay hidden" onclick="UI.toggleModal('image-modal', false)">
+        <img id="img-viewer-src" src="">
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="overlay hidden">
+        <div class="modal-card glass-panel center-text">
+            <h3 id="confirm-title" style="color:var(--primary); margin-bottom:10px;">Confirmação</h3>
+            <p id="confirm-msg" style="margin-bottom:20px;">Tem certeza?</p>
+            <div class="modal-actions">
+                <button class="btn-text" onclick="UI.toggleModal('confirm-modal', false)">Cancelar</button>
+                <button class="btn-primary glow-btn" id="confirm-btn-yes">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-task-modal" class="overlay hidden">
+        <div class="modal-card glass-panel">
+            <h3>Excluir Item</h3>
+            <div id="delete-list" class="task-container" style="max-height: 300px; overflow-y: auto; margin: 15px 0;"></div>
+            <button class="btn-text full-width" onclick="UI.toggleModal('delete-task-modal', false)">Fechar</button>
+        </div>
+    </div>
+
+    <div id="vision-add-modal" class="overlay hidden">
+        <div class="modal-card glass-panel">
+            <h3>Adicionar ao Quadro</h3>
+            
+            <label>Opção 1: URL da Imagem</label>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="vision-url" placeholder="https://...">
+                <button class="btn-primary glow-btn" onclick="App.addVisionItem()">OK</button>
+            </div>
+
+            <div class="center-text" style="margin:15px 0; opacity:0.7;">- OU -</div>
+
+            <label class="btn-primary full-width glow-btn btn-file">
+                <i class="fa-solid fa-upload"></i> Upload da Galeria
+                <input type="file" accept="image/*" onchange="App.uploadVision(this)">
+            </label>
+
+            <button class="btn-text full-width" style="margin-top:10px" onclick="UI.toggleModal('vision-add-modal', false)">Cancelar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
